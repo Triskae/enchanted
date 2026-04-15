@@ -59,9 +59,6 @@ struct Chat: View, Sendable {
             await languageModelStore.setModel(model: conversation.model)
             Haptics.shared.mediumTap()
         }
-        withAnimation {
-            showMenu.toggle()
-        }
     }
     
     @MainActor func onStopGenerateTap() {
@@ -146,31 +143,24 @@ struct Chat: View, Sendable {
                 copyChat: copyChat
             )
 #else
-            SideBarStack(sidebarWidth: 300,showSidebar: $showMenu, sidebar: {
-                SidebarView(
-                    selectedConversation: conversationStore.selectedConversation,
-                    conversations: conversationStore.conversations,
-                    onConversationTap: onConversationTap,
-                    onConversationDelete: onConversationDelete,
-                    onDeleteDailyConversations: conversationStore.deleteDailyConversations
-                )
-            }) {
-                ChatView(
-                    conversation: conversationStore.selectedConversation,
-                    messages: conversationStore.messages,
-                    modelsList: languageModelStore.models,
-                    selectedModel: languageModelStore.selectedModel,
-                    onSelectModel: languageModelStore.setModel,
-                    onMenuTap: toggleMenu,
-                    onNewConversationTap: newConversation,
-                    onSendMessageTap: sendMessage,
-                    conversationState: conversationStore.conversationState,
-                    onStopGenerateTap: onStopGenerateTap,
-                    reachable: appStore.isReachable,
-                    modelSupportsImages: languageModelStore.supportsImages,
-                    userInitials: userInitials
-                )
-            }
+            ChatView(
+                conversation: conversationStore.selectedConversation,
+                conversations: conversationStore.conversations,
+                messages: conversationStore.messages,
+                modelsList: languageModelStore.models,
+                selectedModel: languageModelStore.selectedModel,
+                onSelectModel: languageModelStore.setModel,
+                onNewConversationTap: newConversation,
+                onSendMessageTap: sendMessage,
+                conversationState: conversationStore.conversationState,
+                onStopGenerateTap: onStopGenerateTap,
+                reachable: appStore.isReachable,
+                modelSupportsImages: languageModelStore.supportsImages,
+                userInitials: userInitials,
+                onConversationTap: onConversationTap,
+                onConversationDelete: onConversationDelete,
+                onDeleteDailyConversations: conversationStore.deleteDailyConversations
+            )
 #endif
         }
         .onChange(of: languageModelStore.models, { _, modelsList in
