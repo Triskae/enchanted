@@ -16,7 +16,7 @@ struct ApplicationEntry: View {
     @State private var appStore = AppStore.shared
     
     var body: some View {
-        VStack {
+        Group {
             switch appStore.appState {
             case .chat:
                 Chat(languageModelStore: languageModelStore, conversationStore: conversationStore, appStore: appStore)
@@ -25,7 +25,6 @@ struct ApplicationEntry: View {
             }
         }
         .task {
-            
             if let bundleIdentifier = Bundle.main.bundleIdentifier {
                 print("Bundle Identifier: \(bundleIdentifier)")
             } else {

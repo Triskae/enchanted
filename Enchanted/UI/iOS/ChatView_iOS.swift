@@ -118,71 +118,72 @@ struct ChatView: View {
     }
 
     var inputFields: some View {
-        HStack(spacing: 10) {
+        HStack(alignment: .bottom, spacing: 8) {
             PhotosPicker(selection: $pickerSelectorActive) {
                 Image(systemName: "photo")
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundStyle(.foreground)
-                    .frame(height: 19)
+                    .font(.system(size: 18))
+                    .foregroundStyle(.secondary)
             }
             .onChange(of: pickerSelectorActive) {
                 Task {
                     if let loaded = try? await pickerSelectorActive?.loadTransferable(type: Image.self) {
                         selectedImage = loaded
-                    } else {
-                        print("Failed")
                     }
                 }
             }
             .showIf(selectedModel?.supportsImages ?? false)
 
-
-            HStack {
-                SelectedImageView(image: $selectedImage)
-
-                TextField("Message", text: $message, axis: .vertical)
-                    .focused($isFocusedInput)
-                    .frame(minHeight: 40)
-                    .font(.system(size: 14))
-
-                RecordingView(speechRecognizer: speechRecognizer, isRecording: $isRecording.animation()) { transcription in
-                    self.message = transcription
-                }
-            }
-            .onChange(of: isFocusedInput, { oldValue, newValue in
-                withAnimation {
-                    isFocusedInput = newValue
-                }
-            })
-            .padding(.horizontal)
-            .overlay(
-                RoundedRectangle(cornerRadius: 20)
-                    .strokeBorder(
-                        isRecording ? Color(.systemBlue) : Color(.systemGray2),
-                        style: StrokeStyle(lineWidth: isRecording ? 2 : 0.5)
-                    )
-            )
-
-            switch conversationState {
-            case .loading:
-                SimpleFloatingButton(systemImage: "square.fill", onClick: onStopGenerateTap)
-                    .frame(width: 12)
-            default:
-                SimpleFloatingButton(systemImage: "paperplane.fill", onClick: onMessageSubmit)
-                    .frame(width: 18)
-            }
+            CapsuleInputField()
         }
-        .contentShape(Rectangle())
         .onTapGesture {
-            // allow focusing text area on greater tap area
             isFocusedInput = true
         }
     }
 
+    @ViewBuilder
+    private func CapsuleInputField() -> some View {
+        HStack(alignment: .bottom, spacing: 6) {
+            if selectedImage != nil {
+                SelectedImageView(image: $selectedImage)
+            }
+
+            TextField("Message", text: $message, axis: .vertical)
+                .focused($isFocusedInput)
+                .font(.body)
+                .lineLimit(1...5)
+
+            RecordingView(speechRecognizer: speechRecognizer, isRecording: $isRecording.animation()) { transcription in
+                self.message = transcription
+            }
+
+            switch conversationState {
+            case .loading:
+                Button(action: onStopGenerateTap) {
+                    Image(systemName: "stop.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
+            default:
+                if !message.isEmpty || selectedImage != nil {
+                    Button(action: onMessageSubmit) {
+                        Image(systemName: "arrow.up.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(.blue)
+                    }
+                    .buttonStyle(.plain)
+                    .transition(.scale.combined(with: .opacity))
+                }
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .glassEffect(in: .capsule)
+    }
+
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 if conversation != nil {
                     MessageListView(
                         messages: messages,
@@ -204,11 +205,12 @@ struct ChatView: View {
                 if !reachable {
                     UnreachableAPIView()
                 }
-
+            }
+            .safeAreaInset(edge: .bottom, spacing: 0) {
                 inputFields
                     .padding(.horizontal)
+                    .padding(.vertical, 5)
             }
-            .padding(.bottom, 5)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

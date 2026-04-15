@@ -58,22 +58,21 @@ struct InputFieldsView: View {
 #endif
     
     var body: some View {
-        HStack(spacing: 20) {
+        HStack(alignment: .bottom, spacing: 8) {
             if let image = selectedImage {
                 RemovableImage(
                     image: image,
-                    onClick: {selectedImage = nil},
-                    height: 70
+                    onClick: { selectedImage = nil },
+                    height: 50
                 )
-                .padding(5)
             }
-            
-            ZStack(alignment: .trailing) {
+
+            HStack(alignment: .bottom, spacing: 6) {
                 TextField("Message", text: $message.animation(.easeOut(duration: 0.3)), axis: .vertical)
                     .focused($isFocusedInput)
-                    .font(.system(size: 14))
-                    .frame(maxWidth:.infinity, minHeight: 40)
-                    .clipped()
+                    .font(.body)
+                    .frame(maxWidth: .infinity, minHeight: 28)
+                    .lineLimit(1...5)
                     .textFieldStyle(.plain)
 #if os(macOS)
                     .onSubmit {
@@ -84,68 +83,64 @@ struct InputFieldsView: View {
                         }
                     }
 #endif
-                /// TextField bypasses drop area
                     .allowsHitTesting(!fileDropActive)
 #if os(macOS)
                     .addCustomHotkeys(hotkeys)
 #endif
-                    .padding(.trailing, 80)
-                
-                
-                HStack {
-                    RecordingView(isRecording: $isRecording.animation()) { transcription in
-                        withAnimation(.easeIn(duration: 0.3)) {
-                            self.message = transcription
-                        }
+
+                RecordingView(isRecording: $isRecording.animation()) { transcription in
+                    withAnimation(.easeIn(duration: 0.3)) {
+                        self.message = transcription
                     }
-                    
-                    SimpleFloatingButton(systemImage: "photo.fill", onClick: { fileSelectingActive.toggle() })
-                        .showIf(selectedModel?.supportsImages ?? false)
-                        .fileImporter(isPresented: $fileSelectingActive,
-                                      allowedContentTypes: [.png, .jpeg, .tiff],
-                                      onCompletion: { result in
-                            switch result {
-                            case .success(let url):
-                                guard url.startAccessingSecurityScopedResource() else { return }
-                                if let imageData = try? Data(contentsOf: url) {
-                                    selectedImage = Image(data: imageData)
-                                }
-                                url.stopAccessingSecurityScopedResource()
-                            case .failure(let error):
-                                print(error)
+                }
+
+                SimpleFloatingButton(systemImage: "photo.fill", onClick: { fileSelectingActive.toggle() })
+                    .showIf(selectedModel?.supportsImages ?? false)
+                    .fileImporter(isPresented: $fileSelectingActive,
+                                  allowedContentTypes: [.png, .jpeg, .tiff],
+                                  onCompletion: { result in
+                        switch result {
+                        case .success(let url):
+                            guard url.startAccessingSecurityScopedResource() else { return }
+                            if let imageData = try? Data(contentsOf: url) {
+                                selectedImage = Image(data: imageData)
                             }
-                        })
-                    
-                    
-                    Group {
-                        switch conversationState {
-                        case .loading:
-                            SimpleFloatingButton(systemImage: "square.fill", onClick: onStopGenerateTap)
-                        default:
-                            SimpleFloatingButton(systemImage: "paperplane.fill", onClick: { Task { sendMessage() } })
-                                .showIf(!message.isEmpty)
+                            url.stopAccessingSecurityScopedResource()
+                        case .failure(let error):
+                            print(error)
                         }
+                    })
+
+                switch conversationState {
+                case .loading:
+                    Button(action: onStopGenerateTap) {
+                        Image(systemName: "stop.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
                     }
-                    
+                    .buttonStyle(.plain)
+                default:
+                    if !message.isEmpty || selectedImage != nil {
+                        Button(action: { Task { sendMessage() } }) {
+                            Image(systemName: "arrow.up.circle.fill")
+                                .font(.title2)
+                                .foregroundStyle(.blue)
+                        }
+                        .buttonStyle(.plain)
+                        .transition(.scale.combined(with: .opacity))
+                    }
                 }
             }
-            
-        }
-        .transition(.slide)
-        .padding(.horizontal)
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .strokeBorder(
-                    Color.gray2Custom,
-                    style: StrokeStyle(lineWidth: 1)
-                )
-        )
-        .overlay {
-            if fileDropActive {
-                DragAndDrop(cornerRadius: 10)
-            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .glassEffect(in: .rect(cornerRadius: 20))
         }
         .animation(.default, value: fileDropActive)
+        .overlay {
+            if fileDropActive {
+                DragAndDrop(cornerRadius: 20)
+            }
+        }
         .onDrop(of: [.image], isTargeted: $fileDropActive.animation(), perform: { providers in
             guard let provider = providers.first else { return false }
             _ = provider.loadDataRepresentation(for: .image) { data, error in
@@ -156,9 +151,7 @@ struct InputFieldsView: View {
             
             return true
         })
-        .contentShape(Rectangle())
         .onTapGesture {
-            // allow focusing text area on greater tap area
             isFocusedInput = true
         }
     }
