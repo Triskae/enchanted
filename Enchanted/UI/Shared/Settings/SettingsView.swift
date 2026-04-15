@@ -25,137 +25,111 @@ struct SettingsView: View {
     var deleteAll: () -> ()
     var ollamaLangugeModels: [LanguageModelSD]
     var voices: [AVSpeechSynthesisVoice]
-    
+
     @State private var deleteConversationsDialog = false
-    
+
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Ollama").font(.headline)) {
-                    
+                Section {
                     TextField("Ollama server URI", text: $ollamaUri, onCommit: checkServer)
                         .textContentType(.URL)
                         .disableAutocorrection(true)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-#if !os(macOS)
-                        .padding(.top, 8)
+#if os(iOS)
                         .keyboardType(.URL)
                         .autocapitalization(.none)
 #endif
-                    
-                    VStack(alignment: .leading) {
-                        Text("System prompt")
-                        TextEditor(text: $systemPrompt)
-                            .font(.system(size: 13))
-                            .cornerRadius(4)
-                            .multilineTextAlignment(.leading)
-                            .frame(minHeight: 100)
-                    }
-                    
-                    Picker(selection: $defaultOllamModel) {
-                        ForEach(ollamaLangugeModels, id:\.self) { model in
-                            Text(model.name).tag(model.name)
-                        }
-                    } label: {
-                        Label {
-                            Text("Default Model")
-                        } icon: {
-                            Image("ollama")
-                                .renderingMode(.template)
-                                .resizable()
-                                .scaledToFit()
-                                .foregroundColor(Color(.label))
-                                .frame(width: 24, height: 24)
-                        }
-                    }
-                    
-                    
+
                     TextField("Bearer Token", text: $ollamaBearerToken)
                         .disableAutocorrection(true)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
 #if os(iOS)
                         .autocapitalization(.none)
 #endif
+
                     TextField("Ping Interval (seconds)", text: $pingInterval)
                         .disableAutocorrection(true)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                    
-                    Section(header: Text("APP").font(.headline).padding(.top, 20)) {
-                        
-#if os(iOS)
-                        Toggle(isOn: $vibrations, label: {
-                            Label("Vibrations", systemImage: "water.waves")
-                                .foregroundStyle(Color.label)
-                        })
-#endif
+                } header: {
+                    Text("Ollama")
+                }
+
+                Section {
+                    Picker(selection: $defaultOllamModel) {
+                        ForEach(ollamaLangugeModels, id: \.self) { model in
+                            Text(model.name).tag(model.name)
+                        }
+                    } label: {
+                        Label("Default Model", systemImage: "cpu")
                     }
-                    
-                    
+                }
+
+                Section {
+                    TextEditor(text: $systemPrompt)
+                        .frame(minHeight: 100)
+                } header: {
+                    Text("System Prompt")
+                }
+
+#if os(iOS)
+                Section {
+                    Toggle(isOn: $vibrations) {
+                        Label("Vibrations", systemImage: "water.waves")
+                    }
+                }
+#endif
+
+                Section {
                     Picker(selection: $colorScheme) {
-                        ForEach(AppColorScheme.allCases, id:\.self) { scheme in
+                        ForEach(AppColorScheme.allCases, id: \.self) { scheme in
                             Text(scheme.toString).tag(scheme.id)
                         }
                     } label: {
                         Label("Appearance", systemImage: "sun.max")
-                            .foregroundStyle(Color.label)
                     }
-                    
+
                     Picker(selection: $voiceIdentifier) {
-                        ForEach(voices, id:\.self.identifier) { voice in
+                        ForEach(voices, id: \.self.identifier) { voice in
                             Text(voice.prettyName).tag(voice.identifier)
                         }
                     } label: {
                         Label("Voice", systemImage: "waveform")
-                            .foregroundStyle(Color.label)
-                        
-#if os(macOS)
-                        Text("Download voices by going to Settings > Accessibility > Spoken Content > System Voice > Manage Voices.")
-#else
-                        Text("Download voices by going to Settings > Accessibility > Spoken Content > Voices.")
+                    }
+
+                    TextField("Initials", text: $appUserInitials)
+                        .disableAutocorrection(true)
+#if os(iOS)
+                        .autocapitalization(.none)
 #endif
-                        
-                        Button(action: {
+                } header: {
+                    Text("App")
+                } footer: {
+                    VStack(alignment: .leading, spacing: 4) {
+#if os(macOS)
+                        Text("Download voices: Settings > Accessibility > Spoken Content > System Voice > Manage Voices.")
+#else
+                        Text("Download voices: Settings > Accessibility > Spoken Content > Voices.")
+#endif
+                        Button {
 #if os(macOS)
                             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.universalaccess?SpeakableItems") {
                                 NSWorkspace.shared.open(url)
                             }
 #else
-                            let url = URL(string: "App-Prefs:root=General&path=ACCESSIBILITY")
-                            if let url = url, UIApplication.shared.canOpenURL(url) {
-                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                            if let url = URL(string: "App-Prefs:root=General&path=ACCESSIBILITY") {
+                                UIApplication.shared.open(url)
                             }
 #endif
-                            
-                        }) {
-                            
-                            Text("Open Settings")
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                    
-                    
-                    TextField("Initials", text: $appUserInitials)
-                        .disableAutocorrection(true)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-#if os(iOS)
-                        .keyboardType(.URL)
-                        .autocapitalization(.none)
-#endif
-                    
-                    Button(action: {deleteConversationsDialog.toggle()}) {
-                        HStack {
-                            Spacer()
-                            
-                            Text("Clear All Data")
-                                .foregroundStyle(Color(.systemRed))
-                                .padding(.vertical, 6)
-                            
-                            Spacer()
+                        } label: {
+                            Text("Open System Settings")
                         }
                     }
                 }
+
+                Section {
+                    Button("Clear All Data", role: .destructive) {
+                        deleteConversationsDialog.toggle()
+                    }
+                }
             }
-            .formStyle(.grouped)
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -166,21 +140,21 @@ struct SettingsView: View {
                     Button("Save", action: save)
                 }
             }
+            .confirmationDialog("Delete All Conversations?", isPresented: $deleteConversationsDialog) {
+                Button("Delete", role: .destructive) { deleteAll() }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                Text("Delete All Conversations?")
+            }
         }
         .preferredColorScheme(colorScheme.toiOSFormat)
-        .confirmationDialog("Delete All Conversations?", isPresented: $deleteConversationsDialog) {
-            Button("Delete", role: .destructive) { deleteAll() }
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            Text("Delete All Conversations?")
-        }
     }
 }
 
 #Preview {
     SettingsView(
         ollamaUri: .constant(""),
-        systemPrompt: .constant("You are an intelligent assistant solving complex problems. You are an intelligent assistant solving complex problems. You are an intelligent assistant solving complex problems."),
+        systemPrompt: .constant("You are an intelligent assistant solving complex problems."),
         vibrations: .constant(true),
         colorScheme: .constant(.light),
         defaultOllamModel: .constant("llama2"),
@@ -195,4 +169,3 @@ struct SettingsView: View {
         voices: []
     )
 }
-
