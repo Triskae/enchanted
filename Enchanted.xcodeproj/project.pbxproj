@@ -17,7 +17,7 @@
 		FF1002322B2483A20011A4DC /* Colours+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1002312B2483A20011A4DC /* Colours+Extension.swift */; };
 		FF1002392B24BBF20011A4DC /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1002382B24BBF20011A4DC /* Chat.swift */; };
 		FF10023E2B24F4900011A4DC /* OllamaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10023D2B24F4900011A4DC /* OllamaService.swift */; };
-		FF1002402B24F7320011A4DC /* SideBarMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF10023F2B24F7320011A4DC /* SideBarMenuView.swift */; };
+
 		FF1002442B25BB730011A4DC /* ConversationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1002432B25BB730011A4DC /* ConversationStore.swift */; };
 		FF1002462B25BCE70011A4DC /* LanguageModelStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1002452B25BCE70011A4DC /* LanguageModelStore.swift */; };
 		FF10024A2B25BE740011A4DC /* LanguageModelSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1002492B25BE740011A4DC /* LanguageModelSD.swift */; };
@@ -114,7 +114,7 @@
 		FF1002312B2483A20011A4DC /* Colours+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Colours+Extension.swift"; sourceTree = "<group>"; };
 		FF1002382B24BBF20011A4DC /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		FF10023D2B24F4900011A4DC /* OllamaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OllamaService.swift; sourceTree = "<group>"; };
-		FF10023F2B24F7320011A4DC /* SideBarMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarMenuView.swift; sourceTree = "<group>"; };
+
 		FF1002432B25BB730011A4DC /* ConversationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationStore.swift; sourceTree = "<group>"; };
 		FF1002452B25BCE70011A4DC /* LanguageModelStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageModelStore.swift; sourceTree = "<group>"; };
 		FF1002492B25BE740011A4DC /* LanguageModelSD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageModelSD.swift; sourceTree = "<group>"; };
@@ -280,7 +280,7 @@
 		FF1002562B2624800011A4DC /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				FF10023F2B24F7320011A4DC /* SideBarMenuView.swift */,
+
 				FF1002592B2624C40011A4DC /* ConversationHistoryListView.swift */,
 				FF33066B2B83BB31007B33E5 /* SidebarButton.swift */,
 				FF33066D2B83CFEC007B33E5 /* KeyboardShortcuts.swift */,
@@ -703,7 +703,7 @@
 				FF6D82192B912804001183A8 /* CompletionButtonView.swift in Sources */,
 				FF10024A2B25BE740011A4DC /* LanguageModelSD.swift in Sources */,
 				FF6B7B132B3EE7AC00E8FEA3 /* Throttler.swift in Sources */,
-				FF1002402B24F7320011A4DC /* SideBarMenuView.swift in Sources */,
+
 				FF9300DE2B782A28000859F4 /* UnreachableAPIView.swift in Sources */,
 				FF6D820D2B90C925001183A8 /* CompletionPanelView.swift in Sources */,
 				FF6D821C2B914202001183A8 /* CompletionsEditorView.swift in Sources */,
@@ -876,7 +876,7 @@
 				CURRENT_PROJECT_VERSION = 51;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Enchanted/Preview Content\"";
-				DEVELOPMENT_TEAM = JDDZ55DT74;
+				DEVELOPMENT_TEAM = M4K64J7R85;
 				ENABLE_HARDENED_RUNTIME = YES;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
@@ -885,7 +885,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Enchanted by Freysa";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio is recorded to transcribe text. Recording is discarded after transcription.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "You can view a text transcription of your meeting in the app.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "You can speak with enchanted with your voice.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -901,7 +901,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = subj.Enchanted;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pixellabs.Enchanted;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
@@ -928,7 +928,7 @@
 				CURRENT_PROJECT_VERSION = 51;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Enchanted/Preview Content\"";
-				DEVELOPMENT_TEAM = JDDZ55DT74;
+				DEVELOPMENT_TEAM = M4K64J7R85;
 				ENABLE_HARDENED_RUNTIME = YES;
 				"ENABLE_HARDENED_RUNTIME[sdk=macosx*]" = YES;
 				ENABLE_PREVIEWS = YES;
@@ -937,7 +937,7 @@
 				INFOPLIST_KEY_CFBundleDisplayName = "Enchanted by Freysa";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Audio is recorded to transcribe text. Recording is discarded after transcription.";
-				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "You can view a text transcription of your meeting in the app.";
+				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "You can speak with enchanted with your voice.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -953,7 +953,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.8.1;
-				PRODUCT_BUNDLE_IDENTIFIER = subj.Enchanted;
+				PRODUCT_BUNDLE_IDENTIFIER = com.pixellabs.Enchanted;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
