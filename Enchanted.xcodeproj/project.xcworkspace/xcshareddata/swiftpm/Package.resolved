@@ -1,15 +1,6 @@
 {
-  "originHash" : "3fe20c6c704d04e2f924250b1ce019f513915d235cdd9aedc57f51a0a1a94763",
+  "originHash" : "31e3ca9fabc7f47e736f04c9a50e830fb07c3681d70239762e6e86898575c311",
   "pins" : [
-    {
-      "identity" : "activityindicatorview",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/exyte/ActivityIndicatorView.git",
-      "state" : {
-        "revision" : "9970fd0bb7a05dad0b6566ae1f56937716686b24",
-        "version" : "1.1.1"
-      }
-    },
     {
       "identity" : "alamofire",
       "kind" : "remoteSourceControl",
@@ -116,15 +107,6 @@
       "state" : {
         "revision" : "bb48b128d3c13c68c68e83833c622eec9f6c701f",
         "version" : "1.0.1"
-      }
-    },
-    {
-      "identity" : "wrappinghstack",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ksemianov/WrappingHStack",
-      "state" : {
-        "revision" : "3300f68b6bf5f8a75ee7ca8a40f136a558053d10",
-        "version" : "0.2.0"
       }
     }
   ],

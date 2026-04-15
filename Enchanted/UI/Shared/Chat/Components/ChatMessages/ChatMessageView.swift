@@ -7,7 +7,6 @@
 
 import SwiftUI
 import MarkdownUI
-import ActivityIndicatorView
 import Splash
 
 struct ChatMessageView: View {
@@ -47,9 +46,8 @@ struct ChatMessageView: View {
                         Spacer()
                     } else {
                         if showLoader {
-                            ActivityIndicatorView(isVisible: .constant(true), type: .rotatingDots(count: 5))
+                            ProgressView()
                                 .frame(width: 24, height: 24)
-                                .rotationEffect(.degrees(90))
                         } else {
                             Image("logo-nobg")
                                 .resizable()
@@ -69,9 +67,7 @@ struct ChatMessageView: View {
                             if showThink {
                                 if let think = message.think {
                                     Markdown(think)
-#if os(macOS)
                                         .textSelection(.enabled)
-#endif
                                         .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))
                                         .markdownTheme(MarkdownColours.enchantedTheme)
                                 }
@@ -90,9 +86,7 @@ struct ChatMessageView: View {
                     }
                     if let content = message.realContent {
                         Markdown(content)
-    #if os(macOS)
                             .textSelection(.enabled)
-    #endif
                             .markdownCodeSyntaxHighlighter(.splash(theme: codeHighlightColorScheme))
                             .markdownTheme(MarkdownColours.enchantedTheme)
                     }
