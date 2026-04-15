@@ -17,6 +17,7 @@ struct SidebarView: View {
     @State var showSettings = false
     @State var showCompletions = false
     @State var showKeyboardShortcutas = false
+    @State var searchQuery = ""
     
     private func onSettingsTap() {
         Task {
@@ -25,12 +26,17 @@ struct SidebarView: View {
         }
     }
     
+    private var filteredConversations: [ConversationSD] {
+        if searchQuery.isEmpty { return conversations }
+        return conversations.filter { $0.name.localizedCaseInsensitiveContains(searchQuery) }
+    }
+    
     var body: some View {
         VStack {
             ScrollView() {
                 ConversationHistoryList(
                     selectedConversation: selectedConversation,
-                    conversations: conversations,
+                    conversations: filteredConversations,
                     onTap: onConversationTap,
                     onDelete: onConversationDelete,
                     onDeleteDailyConversations: onDeleteDailyConversations
@@ -50,6 +56,7 @@ struct SidebarView: View {
             
         }
         .padding()
+        .searchable(text: $searchQuery, prompt: "Search conversations")
 #if os(macOS)
         .focusedSceneValue(\.showSettings, $showSettings)
 #endif

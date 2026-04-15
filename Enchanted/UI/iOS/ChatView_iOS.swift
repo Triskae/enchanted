@@ -37,6 +37,7 @@ struct ChatView: View {
     @State private var selectedImage: Image?
     @State private var showSettings = false
     @State private var showConversations = false
+    @State private var searchQuery = ""
 
     init(
         conversation: ConversationSD? = nil,
@@ -104,6 +105,17 @@ struct ChatView: View {
         }.sorted { $0.date > $1.date }
     }
 
+
+    private var filteredConversationGroups: [ConversationGroup] {
+        let groups = conversationGroups
+        if searchQuery.isEmpty { return groups }
+        return groups.compactMap { group in
+            let filtered = group.conversations.filter { conversation in
+                conversation.name.localizedCaseInsensitiveContains(searchQuery)
+            }
+            return filtered.isEmpty ? nil : ConversationGroup(date: group.date, conversations: filtered)
+        }
+    }
 
     var inputFields: some View {
         HStack(spacing: 10) {
@@ -240,7 +252,7 @@ struct ChatView: View {
             .sheet(isPresented: $showConversations) {
                 NavigationStack {
                     List {
-                        ForEach(conversationGroups, id: \.self) { group in
+                        ForEach(filteredConversationGroups, id: \.self) { group in
                             Section {
                                 ForEach(group.conversations, id: \.self) { dailyConversation in
                                     HStack {
@@ -283,6 +295,7 @@ struct ChatView: View {
                     .listStyle(.insetGrouped)
                     .navigationTitle("Recent Chats")
                     .navigationBarTitleDisplayMode(.inline)
+                    .searchable(text: $searchQuery, prompt: "Search conversations")
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             Button("Done") { showConversations = false }
