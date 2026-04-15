@@ -25,7 +25,7 @@ struct Settings: View {
     
     @StateObject private var speechSynthesiser = SpeechSynthesizer.shared
     
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     
     private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
     @State private var cancellable: AnyCancellable?
@@ -43,7 +43,7 @@ struct Settings: View {
             Haptics.shared.mediumTap()
             try? await languageModelStore.loadModels()
         }
-        presentationMode.wrappedValue.dismiss()
+        dismiss()
     }
     
     private func checkServer() {

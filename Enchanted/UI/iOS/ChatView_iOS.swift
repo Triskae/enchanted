@@ -32,6 +32,7 @@ struct ChatView: View {
     /// Image selection
     @State private var pickerSelectorActive: PhotosPickerItem?
     @State private var selectedImage: Image?
+    @State private var showSettings = false
     
     init(
         conversation: ConversationSD? = nil,
@@ -84,38 +85,6 @@ struct ChatView: View {
         }
     }
     
-    var header: some View {
-        HStack(alignment: .center) {
-            Button(action: onMenuTap) {
-                Image(systemName: "line.3.horizontal")
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 22)
-                    .foregroundColor(Color(.label))
-            }
-            
-            Spacer()
-            
-            ModelSelectorView(
-                modelsList: modelsList,
-                selectedModel: selectedModel,
-                onSelectModel: onSelectModel
-            )
-            .showIf(!modelsList.isEmpty)
-            
-            Spacer()
-            
-            Button(action: onNewConversationTap) {
-                Image(systemName: "square.and.pencil")
-                    .renderingMode(.template)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 22)
-                    .foregroundColor(Color(.label))
-            }
-        }
-    }
     
     var inputFields: some View {
         HStack(spacing: 10) {
@@ -181,41 +150,73 @@ struct ChatView: View {
     }
     
     var body: some View {
-        VStack {
-            header
-                .padding(.horizontal)
-            
-            if conversation != nil {
-                MessageListView(
-                    messages: messages,
-                    conversationState: conversationState,
-                    userInitials: userInitials,
-                    editMessage: $editMessage
-                )
-            } else {
-                EmptyConversaitonView(sendPrompt: {selectedMessage in
-                    if let selectedModel = selectedModel {
-                        onSendMessageTap(selectedMessage, selectedModel, nil, nil)
+        NavigationStack {
+            VStack {
+                if conversation != nil {
+                    MessageListView(
+                        messages: messages,
+                        conversationState: conversationState,
+                        userInitials: userInitials,
+                        editMessage: $editMessage
+                    )
+                } else {
+                    EmptyConversaitonView(sendPrompt: { selectedMessage in
+                        if let selectedModel = selectedModel {
+                            onSendMessageTap(selectedMessage, selectedModel, nil, nil)
+                        }
+                    })
+                }
+
+                ConversationStatusView(state: conversationState)
+                    .padding()
+
+                if !reachable {
+                    UnreachableAPIView()
+                }
+
+                inputFields
+                    .padding(.horizontal)
+            }
+            .padding(.bottom, 5)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: onMenuTap) {
+                        Image(systemName: "line.3.horizontal")
                     }
-                })
+                }
+
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: { showSettings.toggle() }) {
+                        Image(systemName: "gearshape.fill")
+                    }
+                }
+
+                ToolbarItem(placement: .principal) {
+                    ModelSelectorView(
+                        modelsList: modelsList,
+                        selectedModel: selectedModel,
+                        onSelectModel: onSelectModel
+                    )
+                    .showIf(!modelsList.isEmpty)
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: onNewConversationTap) {
+                        Image(systemName: "square.and.pencil")
+                    }
+                }
             }
-            
-            ConversationStatusView(state: conversationState)
-                .padding()
-            
-            if !reachable {
-                UnreachableAPIView()
+            .onChange(of: editMessage, initial: false) { _, newMessage in
+                if let newMessage = newMessage {
+                    message = newMessage.content
+                    isFocusedInput = true
+                }
             }
-            
-            inputFields
-                .padding(.horizontal)
-            
-        }
-        .padding(.bottom, 5)
-        .onChange(of: editMessage, initial: false) { _, newMessage in
-            if let newMessage = newMessage {
-                message = newMessage.content
-                isFocusedInput = true
+            .sheet(isPresented: $showSettings) {
+                Settings()
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
             }
         }
     }

@@ -9,7 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct SettingsView: View {
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) var dismiss
     @Binding var ollamaUri: String
     @Binding var systemPrompt: String
     @Binding var vibrations: Bool
@@ -29,38 +29,7 @@ struct SettingsView: View {
     @State private var deleteConversationsDialog = false
     
     var body: some View {
-        VStack {
-            ZStack {
-                HStack {
-                    Button {
-                        presentationMode.wrappedValue.dismiss()
-                    } label: {
-                        Text("Cancel")
-                            .font(.system(size: 16))
-                            .foregroundStyle(Color(.label))
-                    }
-                    
-                    
-                    Spacer()
-                    
-                    Button(action: save) {
-                        Text("Save")
-                            .font(.system(size: 16))
-                            .foregroundStyle(Color(.label))
-                    }
-                }
-                
-                HStack {
-                    Spacer()
-                    Text("Settings")
-                        .font(.system(size: 16))
-                        .fontWeight(.medium)
-                        .foregroundStyle(Color(.label))
-                    Spacer()
-                }
-            }
-            .padding()
-            
+        NavigationStack {
             Form {
                 Section(header: Text("Ollama").font(.headline)) {
                     
@@ -187,6 +156,16 @@ struct SettingsView: View {
                 }
             }
             .formStyle(.grouped)
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Save", action: save)
+                }
+            }
         }
         .preferredColorScheme(colorScheme.toiOSFormat)
         .confirmationDialog("Delete All Conversations?", isPresented: $deleteConversationsDialog) {
