@@ -16,7 +16,6 @@ struct MessageListView: View {
     var conversationState: ConversationState
     var userInitials: String
     @Binding var editMessage: MessageSD?
-    @State private var messageSelected: MessageSD?
     @StateObject private var speechSynthesizer = SpeechSynthesizer.shared
     
     func onEditMessageTap() -> (MessageSD) -> Void {
@@ -49,10 +48,6 @@ struct MessageListView: View {
                                 }
                                 
 #if os(iOS) || os(visionOS)
-                                Button(action: { messageSelected = message }) {
-                                    Label("Select Text", systemImage: "selection.pin.in.out")
-                                }
-                                
                                 Button(action: {
                                     onReadAloud(message.content)
                                 }) {
@@ -103,11 +98,6 @@ struct MessageListView: View {
                 .onChange(of: messages.last?.content) {
                     scrollViewProxy.scrollTo(messages.last, anchor: .bottom)
                 }
-#if os(iOS) || os(visionOS)
-                .sheet(item: $messageSelected) { message in
-                    SelectTextSheet(message: message)
-                }
-#endif
             }
             
             ReadingAloudView(onStopTap: stopReadingAloud)
